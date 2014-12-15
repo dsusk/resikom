@@ -30,26 +30,29 @@ for(my $i=0;$i<@irf;$i++){
 		print "\n".$bid." ".$ubid."\n" ;	
 		foreach(@q){
 			print " Q: ".$_." ";
-			if(exists($brefs{$_})){  # pruefen ob bid schon drin
-				push(@{$brefs{$_}}, $bid);
+			if(exists($brefs{$_})){ 
+				if(grep(/$bid/,@{$brefs{$_}})==0){
+					push(@{$brefs{$_}}, $bid);
+				}
 			}else{
 				my @b=($bid);
 				$brefs{$_}=\@b;
 			}
-
-			if(exists($ubrefs{$_})){
-				push(@{$ubrefs{$_}}, $ubid);
-			}else{
-				my @b=($ubid);
-				$ubrefs{$_}=\@b;
+			if($ubid != 0){
+				if(exists($ubrefs{$_})){
+					push(@{$ubrefs{$_}}, $ubid);
+				}else{
+					my @b=($ubid);
+					$ubrefs{$_}=\@b;
+				}
 			}
 		}
 	}
 
 }
 
-#foreach(keys(%brefs)){
-#	print $_." - ".$brefs{$_}->[0]." ".$brefs{$_}->[1]." ".$brefs{$_}->[@{$brefs{$_}}-1]."\n"
+#foreach(keys(%ubrefs)){
+#	print $_." - ".$ubrefs{$_}->[0]." ".$ubrefs{$_}->[1]." ".$ubrefs{$_}->[@{$ubrefs{$_}}-1]." ".@{$ubrefs{$_}}."\n"
 #}
 
 
