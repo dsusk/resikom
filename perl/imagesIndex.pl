@@ -48,8 +48,8 @@ my %legende;
 my %abb_name;
 my %filename;
 # In-loop incremente!
+my $ID;
 for(my $i=0; $i<@images; $i++){
-	my $ID;
 	if($images[$i]=~/\<field name=\"ID\"\>/){
 		$ID=&trimField($images[$i], "ID");
 		$bid{$ID}=&trimField($images[++$i],"BegriffID");
@@ -80,13 +80,15 @@ foreach(keys(%bid)){
 	}		
 	print $op."dok-name".$cls."rf15_II_121207".$endtag;		
 	print $op."type".$cls."image".$endtag;		
-	print $op."image".$cls.$abb_name{$_}.$endtag;		
-	print $op."image_caption".$cls.$legende{$_}.$endtag;		
+	print $op."image".$cls.$_.$endtag;		
+	print $op."image_name".$cls.$abb_name{$_}.$endtag;		
+	my $l =$legende{$_};
+	$l=~s/^Abb\.*\s*\d+\.*://; 
+	print $op."image_caption".$cls.$l.$endtag;		
 	print $op."image_file".$cls.$filename{$_}.$endtag."\n";	
 	foreach $x (@{$brefs{$_}}){	
 		print $op."also_articleID".$cls.$x.$endtag;		
 	}
-	print "\n";
 	print'</doc>';
 }
 print'</add>';
