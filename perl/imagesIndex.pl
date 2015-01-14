@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-my $USAGE="imagesIndex.pl <XML-File> <XML-DB-File> <XML-DB-File";
+my $USAGE="imageIndex.pl <XML-File> <XML-DB-File>";
 
 if(@ARGV!=2){print $USAGE; exit -1}
 open db_images,  $ARGV[0] || die "cannot open ".$ARGV[0]."\n";
