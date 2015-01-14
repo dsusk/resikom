@@ -1,9 +1,11 @@
 #!/usr/bin/perl
 
+binmode(STDOUT, ":utf8");
+
 my $USAGE="hofinhaberIndex.pl <XML-DB-File>";
 
 if(@ARGV!=1){print $USAGE; exit -1}
-open db_hib,  $ARGV[0] || die "cannot open ".$ARGV[0]."\n";
+open db_hib, '<:encoding(UTF-8)', $ARGV[0] || die "cannot open ".$ARGV[0]."\n";
 
 
 my @hib=<db_hib>;
@@ -15,7 +17,8 @@ my $op='<field name="';
 my $cls='">';
 my $endtag='</field>';
 
-print '<?xml version="1.0" encoding="UTF-8"?><add>';
+print '<?xml version="1.0" encoding="UTF-8"?>';
+print "\n<add>";
 for(my $i=0;$i<@hib;$i++){
 	if($hib[$i]=~/\<field name=\"ID\"\>/){
 		my $ID=&trimField($hib[$i], "ID");
@@ -126,9 +129,9 @@ for(my $i=0;$i<@hib;$i++){
                         }
 			print "\n";
 			print'<doc>';
-			print $op."ID".$cls."hofinh-".$ID.$endtag;		
-			print $op."articleID".$cls.$articleID.$endtag;
-			print $op."dok-name".$cls."rf15_I_121220".$endtag;		
+			print $op."id".$cls."hofinh-".$ID.$endtag;		
+			print $op."articleID".$cls."I".$articleID.$endtag;
+			print $op."doc-name".$cls."rf15_I_121220".$endtag;		
 			print $op."type".$cls."hofinhaber".$endtag;		
 			print $op."hofinhaber".$cls.$inhab.$endtag;		
 			print $op."hofinhaber_dynastie".$cls.$dynastie.$endtag;		

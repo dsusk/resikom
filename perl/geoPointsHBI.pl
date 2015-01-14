@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+binmode(STDOUT, ":utf8");
+
+
 my $USAGE="geoPoints.pl <XML-DB-File>";
 
 if(@ARGV!=1){print $USAGE; exit -1}
@@ -25,9 +28,9 @@ for(my $i=0;$i<@points;$i++){
 			
 			print "\n";
 			print'<doc>';
-			print $op."ID".$cls."geoPointHB1-".$ID.$endtag;		
-			print $op."articleID".$cls.$articleID.$endtag;
-			print $op."dok-name".$cls."rf15_I_121220".$endtag;		
+			print $op."id".$cls."geoPointHB1-".$ID.$endtag;		
+			print $op."articleID".$cls."I".$articleID.$endtag;
+			print $op."doc-name".$cls."rf15_I_121220".$endtag;		
 			print $op."type".$cls."geopoint".$endtag;		
 			print $op."geoPointLatitude".$cls.$latitude.$endtag;		
 			print $op."geoPointLongitude".$cls.$longitude.$endtag;		

@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+
+binmode(STDOUT, ":utf8");
+
 my $USAGE="imageIndex.pl <XML-File> <XML-DB-File>";
 
 if(@ARGV!=2){print $USAGE; exit -1}
@@ -72,13 +75,13 @@ print '<?xml version="1.0" encoding="UTF-8"?><add>';
 foreach(keys(%bid)){
 	print "\n";
 	print'<doc>';
-	print $op."ID".$cls.$_."-".$bid{$_}.$endtag;		
+	print $op."id".$cls.$_."-".$bid{$_}.$endtag;		
 	if(exists($ubid{$_}) && $ubid{$_}!=0){
 		print $op."articleID".$cls.$ubid{$_}.$endtag;
 	}else{
 		print $op."articleID".$cls.$bid{$_}.$endtag;
 	}		
-	print $op."dok-name".$cls."rf15_II_121207".$endtag;		
+	print $op."doc-name".$cls."rf15_II_121207".$endtag;		
 	print $op."type".$cls."image".$endtag;		
 	print $op."image".$cls.$_.$endtag;		
 	print $op."image_name".$cls.$abb_name{$_}.$endtag;		
