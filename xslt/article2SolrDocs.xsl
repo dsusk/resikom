@@ -20,7 +20,7 @@
     <xsl:variable name="hb-title" select="//TEI:teiHeader/TEI:publicationStmt/TEI:p" as="xs:string" />
     <xsl:variable name="handbuch" select="concat($hb-title, '-', $hb-band)" />
     
-   <xsl:template match="text()" mode="#default index HBI" />
+   <xsl:template match="text()" mode="#default index HBI HBIV" />
 
     <xsl:template match="/">
         <add>
@@ -86,6 +86,7 @@
         <xsl:param name="article_name"/>
         <xsl:param name="author" />
         <xsl:param name="articleID"/>
+        <xsl:param name="parentArticleID" />
         <xsl:param name="doc-name" />
         <xsl:param name="node" as="node()"></xsl:param>
         <xsl:text>
@@ -97,8 +98,13 @@
             </field>
           <!--   <xsl:text>
                  </xsl:text> -->
-            <field name="dok-name">
+            <field name="doc-name">
                 <xsl:value-of select="$doc-name"/>
+            </field>
+            <xsl:text>
+                 </xsl:text>
+            <field name="type">
+                <xsl:text>article</xsl:text>
             </field>
             <xsl:text>
                  </xsl:text>
@@ -200,16 +206,7 @@
     <xsl:template match="TEI:div[@type='references' or @type='literature' or @type='sources' or @type='sources_literature']" mode="content" />
     <xsl:template match="TEI:div[@type='graphic' or @type='graphic_also']" mode="content" />
     <xsl:template match="TEI:head" mode="content" />
-    
-    
-<!-- templates for index fields  --> 
-    <xsl:template match="TEI:div[@type='references']" mode="index">
-        <field name="article_references">
-            <xsl:value-of select="."/>
-        </field>
-        <xsl:text>
-                 </xsl:text>
-    </xsl:template>
+        
         
     <xsl:template match="TEI:div[@type='sources']" mode="index">
         <field name="sources">
@@ -236,21 +233,5 @@
     </xsl:template>
        
 
-    <xsl:template match="TEI:div[@type='graphic' or @type='graphic_also']" mode="index">    
-        <xsl:choose>
-            <xsl:when test=".[@type='graphic']">
-                <field name="images">
-                    <xsl:value-of select="."/>
-                </field>
-            </xsl:when>
-            <xsl:otherwise>
-                <field name="images-ref">
-                    <xsl:value-of select="."/>
-                </field>
-            </xsl:otherwise>
-        </xsl:choose>
-        <xsl:text>
-                 </xsl:text>
-    </xsl:template>
     
 </xsl:stylesheet>

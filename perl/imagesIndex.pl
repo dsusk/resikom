@@ -3,10 +3,10 @@
 
 binmode(STDOUT, ":utf8");
 
-my $USAGE="imageIndex.pl <XML-File> <XML-DB-File>";
+my $USAGE="imageIndex.pl <XML-DB-File (bilder)> <XML-DB-File (bilder-refs)>";
 
 if(@ARGV!=2){print $USAGE; exit -1}
-open db_images,  $ARGV[0] || die "cannot open ".$ARGV[0]."\n";
+open db_images, '<:encoding(UTF-8)', $ARGV[0] || die "cannot open ".$ARGV[0]."\n";
 open db_imgreferences,  $ARGV[1] || die "cannot open ".$ARGV[1]."\n";
 
 
@@ -75,9 +75,9 @@ print '<?xml version="1.0" encoding="UTF-8"?><add>';
 foreach(keys(%bid)){
 	print "\n";
 	print'<doc>';
-	print $op."id".$cls.$_."-".$bid{$_}.$endtag;		
+	print $op."id".$cls."imgHBII".$_."-".$bid{$_}.$endtag;		
 	if(exists($ubid{$_}) && $ubid{$_}!=0){
-		print $op."articleID".$cls.$ubid{$_}.$endtag;
+		print $op."articleID".$cls."II".$ubid{$_}.$endtag;
 	}else{
 		print $op."articleID".$cls.$bid{$_}.$endtag;
 	}		
