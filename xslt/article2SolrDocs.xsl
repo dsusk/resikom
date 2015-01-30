@@ -6,32 +6,79 @@
     version="2.0">
     <!-- exclude-result-prefixes="html xs xlink xd rk TEI" -->
     
-    <!--       Es wird eine Artikel-Basierter Solr-Index für HB I (mode=HBI) bzw HBIV (mode HBIV) erstellt -->
+    <!--       Es wird eine Artikel-Basierter Solr-Index für HB I (mode=HBI) bzw HBIV (mode ) erstellt -->
     
 
     <!-- HBI: Artikel sind mit <TEI:head xml:id=Ixxx> gekennzeichnet, xxx entspricht der ID in der DB 
         (Artikel haben jeweils einen Autor und keine Unterartikel)
         Ausnahmebehandlung: Dachartikel Hauptorte - Metropolen im Reich  -->
-    
-
+      
     <xsl:include href="./rk_functions.xsl"/>
-   
-    <xsl:variable name="hb-band" select="//TEI:teiHeader/TEI:titleStmt/TEI:title" as="xs:string" />
-    <xsl:variable name="hb-title" select="//TEI:teiHeader/TEI:publicationStmt/TEI:p" as="xs:string" />
-    <xsl:variable name="handbuch" select="concat($hb-title, '-', $hb-band)" />
     
-   <xsl:template match="text()" mode="#default index HBI HBIV" />
+    <!-- Variable mode-param in MUSS angepasst werden!-->     
+    <xsl:variable name="mode-param">HBI</xsl:variable>
+    <xsl:variable name="hb-band" select="//TEI:teiHeader/TEI:fileDesc/TEI:titleStmt/TEI:title" as="xs:string" />
+    <xsl:variable name="hb-title" select="//TEI:teiHeader/TEI:fileDesc/TEI:publicationStmt/TEI:p" as="xs:string" />
+    <xsl:variable name="handbuch" select="concat($hb-title, ' - ', $hb-band)" />
+    <xsl:variable name="hb_subtitle">
+        <xsl:choose>
+            <xsl:when test="$mode-param = 'HBI'">Ein dynastisch-topographisches Handbuch
+            </xsl:when>
+            <xsl:when test="$mode-param = 'HBIV'">Grafen und Herren</xsl:when>
+            <xsl:otherwise>NO_HANDBOOK</xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable> 
+    <xsl:variable name="verlag">Jan Thorbecke Verlag</xsl:variable>
+    <xsl:variable name="book">
+     <xsl:choose>
+         <xsl:when test="$mode-param = 'HBI'">I</xsl:when>
+         <xsl:when test="$mode-param = 'HBIV'">IV</xsl:when>
+         <xsl:otherwise>NO_HANDBOOK</xsl:otherwise>
+     </xsl:choose>
+    </xsl:variable>
+    
+   <xsl:variable name="isbn">
+       <xsl:choose>
+           <xsl:when test="$mode-param = 'HBI'">978-3-7995-4515-0</xsl:when>
+           <xsl:when test="$mode-param = 'HBIV'">978-3-7995-4525-9</xsl:when>
+           <xsl:otherwise>NO_HANDBOOK</xsl:otherwise>
+       </xsl:choose>
+   </xsl:variable>
+    
+    <xsl:variable name="auflage">
+        <xsl:choose>
+            <xsl:when test="$mode-param = 'HBI'">1. Auflage 2003</xsl:when>
+            <xsl:when test="$mode-param = 'HBIV'">1. Auflage 2012</xsl:when>
+            <xsl:otherwise>NO_HANDBOOK</xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+    
+    
+    
+   <xsl:template match="text()" mode="#default index HBI  HBIV" />    
 
     <xsl:template match="/">
         <add>
-        <xsl:apply-templates select="//TEI:div" mode="HBIV"/>
+            <xsl:choose>
+                <xsl:when test="$mode-param = 'HBI'">
+                    <xsl:apply-templates select="//TEI:div" mode="HBI"/>                    
+                </xsl:when>
+                <xsl:when test="$mode-param = 'HBIV'">
+                    <xsl:apply-templates select="//TEI:div" mode="HBIV"/>                    
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:message> Not a valid mode, variable mode-param should be HBI or HBIV</xsl:message>
+                </xsl:otherwise>
+            </xsl:choose>
         </add>
     </xsl:template>
 
 
+
+<!-- DIV template for HB I -->
    <xsl:template match="TEI:div[not(@type)]"  mode="HBI">
     <xsl:choose>
-        <xsl:when test="./TEI:head[@xml:id] or contains(./TEI:head, 'HAUPTORTE - METROPOLEN')">
+        <xsl:when test="./TEI:head[@xml:id]">  <!-- or contains(./TEI:head, 'HAUPTORTE - METROPOLEN') -->
             <xsl:variable name="article_name" select="./TEI:head"/>
             <xsl:variable name="section_name" select="ancestor::TEI:div/TEI:head"/> 
             <xsl:variable name="author" select="normalize-space(descendant::TEI:div[@type='author'][1])"/>
@@ -47,13 +94,14 @@
                         </xsl:with-param></xsl:call-template>
         </xsl:when>            
         <xsl:otherwise>
-            <xsl:apply-templates select="." />
+            <xsl:apply-templates select="."/>
         </xsl:otherwise>
     </xsl:choose>
 
    </xsl:template>
     
 
+<!-- DIV template for HB IV --> 
     <xsl:template match="TEI:div[not(@type)]"  mode="HBIV">
         <xsl:choose>
             <xsl:when test="./TEI:head[@xml:id]">
@@ -73,7 +121,7 @@
                     </xsl:with-param></xsl:call-template>
                 </xsl:for-each>
             </xsl:when>            
-            <xsl:otherwise>
+            <xsl:otherwise>    <!-- TEST -->
                 <xsl:apply-templates select="." />
             </xsl:otherwise>
         </xsl:choose>
@@ -89,8 +137,7 @@
         <xsl:param name="parentArticleID" />
         <xsl:param name="doc-name" />
         <xsl:param name="node" as="node()"></xsl:param>
-        <xsl:text>
-            </xsl:text>
+       
         <doc><!-- <xsl:text>
             </xsl:text> -->
             <field name="id">
@@ -101,36 +148,41 @@
             <field name="doc-name">
                 <xsl:value-of select="$doc-name"/>
             </field>
-            <xsl:text>
-                 </xsl:text>
+            <field name="book">
+                <xsl:value-of select="$book"/>
+            </field>
+            <field name="book-title">
+                <xsl:value-of select="$handbuch"/>
+            </field>
+            <field name="book-subtitle">
+                <xsl:value-of select="$hb_subtitle"/>
+            </field>
+            
+            <field name="verlag">
+                <xsl:value-of select="$verlag"/>
+            </field>
+            
+            <field name="isbn">
+                <xsl:value-of select="$isbn"/>
+            </field>
+            <field name="auflage">
+                <xsl:value-of select="$auflage"/>
+            </field>
             <field name="type">
                 <xsl:text>article</xsl:text>
-            </field>
-            <xsl:text>
-                 </xsl:text>
-            
+            </field>    
             <field name="path">
                 <xsl:value-of select="rk:generate-xpath($node, true())"/>
             </field>
-            <xsl:text>   
-                 </xsl:text>
             <field name="section-title">
                 <xsl:value-of select="$section_name"/>
-            </field>
-            <xsl:text>
-                 </xsl:text>
-            
+            </field> 
             <field name="article-title">
                 <xsl:value-of select="$article_name"/>
-            </field>
-            <xsl:text>
-                 </xsl:text>
-            
+            </field>     
             <field name="author">
                 <xsl:value-of select="$author"/>
             </field>
-            <xsl:text>
-                 </xsl:text>
             
             <!-- <xsl:if test="$node/TEI:head">
                 <field name="article-subtitle">
@@ -143,8 +195,6 @@
                 <field name="articleID">
                     <xsl:value-of select="$articleID"/>
                 </field>
-                <xsl:text>
-                 </xsl:text>
             </xsl:if>
             <field name="page-from">
                 <xsl:value-of select="preceding::TEI:pb[1]/@n"/>
@@ -156,10 +206,7 @@
             <!-- muss noch formatiert etc werden -->
             <field name="content">
                 <xsl:text disable-output-escaping="yes">&lt;![CDATA[</xsl:text>
-                <xsl:value-of select="$node/text()" />
-                <!-- <xsl:value-of select="."/> -->
-                <xsl:apply-templates select="$node" mode="content"/>
-                <xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>
+                <!-- <xsl:value-of select="$node/text()" />--><xsl:apply-templates select="$node" mode="content"/><xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>
             </field>
             <xsl:text>
                  </xsl:text>
@@ -173,18 +220,34 @@
     </xsl:template>
     
     <!-- text formatter in content field --> 
-    <xsl:template match="TEI:div/TEI:head" mode="content">
-        <xsl:element name="span">
-            <xsl:attribute name="class"><xsl:value-of select="name(.)"/></xsl:attribute>
-            <xsl:value-of select="text()" />       
-         </xsl:element> 
-    </xsl:template>
+    
+    <xsl:template match="TEI:head[@xml:id]" mode="content" />
+        
+    <xsl:template match="TEI:head[not(@xml:id)]" mode="content">
+        <!-- Tiefe zu attribute class zufügen <xsl:value-of select="count(./ancestor::*) + 1"/> -->
+            <xsl:choose>
+            <xsl:when test="$mode-param = 'HBI'">
+                <xsl:element name="span">
+                 <xsl:attribute name="class"> <xsl:value-of select="concat(name(.), ' head', count(./ancestor::*)-5)" /></xsl:attribute>
+        <xsl:value-of select="text()" />
+        </xsl:element>
+        </xsl:when>
+        <xsl:when test="$mode-param = 'HBIV'">
+            <xsl:if test="not(../../TEI:head[@xml:id])">
+                <xsl:element name="span">
+                    <xsl:attribute name="class"> <xsl:value-of select="concat(name(.), ' head', count(./ancestor::*)-5)" /></xsl:attribute>
+                    <xsl:value-of select="text()" />
+                </xsl:element>
+            </xsl:if>
+        </xsl:when>
+        </xsl:choose>
+        
+     </xsl:template>
 
     <xsl:template match="TEI:p" mode="content">
         <xsl:element name="span">
             <xsl:attribute name="class"><xsl:value-of select="name(.)"/></xsl:attribute>
-           <xsl:value-of select="text()" />       
-            <xsl:apply-templates select="./*" mode="content" /> 
+            <xsl:apply-templates select="text()|./*" mode="content" /> 
         </xsl:element> 
     </xsl:template>
     
@@ -205,12 +268,12 @@
     <xsl:template match="TEI:div[@type='graphic' or @type='author']" mode="content" />
     <xsl:template match="TEI:div[@type='references' or @type='literature' or @type='sources' or @type='sources_literature']" mode="content" />
     <xsl:template match="TEI:div[@type='graphic' or @type='graphic_also']" mode="content" />
-    <xsl:template match="TEI:head" mode="content" />
+   <!--  <xsl:template match="TEI:head" mode="content" /> -->
         
         
     <xsl:template match="TEI:div[@type='sources']" mode="index">
         <field name="sources">
-            <xsl:value-of select="."/>
+            <xsl:text disable-output-escaping="yes">&lt;![CDATA[</xsl:text><xsl:apply-templates select="text()|./*" mode="content" /> <xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>
         </field>
         <xsl:text>
                  </xsl:text>
@@ -218,7 +281,7 @@
    
     <xsl:template match="TEI:div[@type='literature']" mode="index">
         <field name="literature">
-            <xsl:value-of select="."/>
+            <xsl:text disable-output-escaping="yes">&lt;![CDATA[</xsl:text><xsl:apply-templates select="text()|./*" mode="content" /> <xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>            
         </field>
         <xsl:text>
                  </xsl:text>
@@ -226,8 +289,8 @@
     
     <xsl:template match="TEI:div[@type='sources_literature']" mode="index">
         <field name="literature_sources">
-            <xsl:value-of select="."/>
-        </field>
+            <xsl:text disable-output-escaping="yes">&lt;![CDATA[</xsl:text><xsl:apply-templates select="text()|./*" mode="content" /> <xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>
+            </field>
         <xsl:text>
                  </xsl:text>
     </xsl:template>

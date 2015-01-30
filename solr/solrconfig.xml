@@ -70,9 +70,9 @@
 			<str name="spellcheck.collateExtendedResults">true</str>
 			<str name="spellcheck.maxCollationTries">5</str>
 			<str name="spellcheck.maxCollations">3</str>
-		<!-- 	<str name="qf">
+		 <!--	<str name="qf">
 			      article-title^5 hofinhaber^3 hofinhaber_dynastie^2 image_caption^1 content^1
-  			 </str> -->
+  			 </str>  -->
                 </lst>
         </requestHandler>
 

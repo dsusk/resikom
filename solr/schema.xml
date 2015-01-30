@@ -9,8 +9,15 @@
 	    <!-- Metadata all types -->
 		<field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false"/> 
 		<field name="doc-name" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="book" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="type" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="articleID" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+		<!-- book metadata --> 
+		<field name="book-title" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="book-subtitle" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+		<field name="isbn" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+		<field name="verlag" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+		<field name="auflage" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
 
 		<!-- values for type "article" --> 	
 		 <field name="page-from" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
@@ -54,15 +61,26 @@
 		<field name="image_name" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
 		<field name="image_caption" type="text_de" indexed="true" stored="true" required="false" multiValued="false"/>
 		<field name="image_file" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-		<field name="also_articleID" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="ubid" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="also_articleID" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
 		
 		<!-- necessary for transaction log -->
 		<field name="_version_" type="long" indexed="true" stored="true"/>
+
+
+		<!-- suggester field--> 
+		<dynamicField name="*_suggest" type="phrase_suggest" indexed="true" stored="true" multiValued="true" required="false"/>
+
 	  </fields>
+	  
+		<uniqueKey>id</uniqueKey>
+
+		<copyField source="hofinhaber_dynastie" dest="all_suggest"/>
+		<copyField source="section-title" dest="all_suggest"/> 
+		<copyField source="article-title" dest="all_suggest"/>
 
 
 
-	  <uniqueKey>id</uniqueKey>
 
 	  <types>
 	    <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
@@ -71,20 +89,33 @@
     <fieldType name="text_de" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <!-- <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords_dt.txt" enablePositionIncrements="true"/> -->
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords_dt.txt" enablePositionIncrements="true"/> 
        <!-- <filter class="solr.SynonymFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="true"/>-->
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.HyphenatedWordsFilterFactory"/>
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
       </analyzer>
-      <!--<analyzer type="query">
+      <analyzer type="query">
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" enablePositionIncrements="true" />
-        <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-      </analyzer> -->
+      </analyzer>
 
-    </fieldType>
+     </fieldType>
+
+	<!--
+			From:
+			http://svn.apache.org/repos/asf/lucene/dev/branches/lucene_solr_4_3/solr/core/src/test-files/solr/collection1/conf/schema-phrasesuggest.xml
+		-->
+		<fieldtype name="phrase_suggest" class="solr.TextField">
+			<analyzer>
+				<tokenizer class="solr.KeywordTokenizerFactory"/>
+				<filter class="solr.PatternReplaceFilterFactory"
+						pattern="([^\p{L}\p{M}\p{N}\p{Cs}]*[\p{L}\p{M}\p{N}\p{Cs}\_]+:)|([^\p{L}\p{M}\p{N}\p{Cs}])+"
+						replacement=" " replace="all"/>
+				<filter class="solr.LowerCaseFilterFactory"/>
+				<filter class="solr.TrimFilterFactory"/>
+			</analyzer>
+		</fieldtype>
 
     <!--  PathHierarchyTokenizerFactory ? 
        <fieldType name="descendent_path" class="solr.TextField">
