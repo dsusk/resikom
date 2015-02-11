@@ -12,7 +12,7 @@ open db_gp,  $ARGV[0] || die "cannot open ".$ARGV[0]."\n";
 my @points=<db_gp>;
 chomp@points;
 
-
+my $BOOK="I";
 # Writing the index
 my $op='<field name="';
 my $cls='">';
@@ -28,7 +28,8 @@ for(my $i=0;$i<@points;$i++){
 			
 			print "\n";
 			print'<doc>';
-			print $op."id".$cls."geoPointHB1-".$ID.$endtag;		
+			print $op."id".$cls."geoPoint-".$ID.$endtag;		
+			print $op."book".$cls.$BOOK.$ID.$endtag;		
 			print $op."articleID".$cls."I".$articleID.$endtag;
 			print $op."doc-name".$cls."rf15_I_121220".$endtag;		
 			print $op."type".$cls."geopoint".$endtag;		

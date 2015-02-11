@@ -11,6 +11,7 @@ open db_hib, '<:encoding(UTF-8)', $ARGV[0] || die "cannot open ".$ARGV[0]."\n";
 my @hib=<db_hib>;
 chomp@hib;
 
+my $BOOK='I';
 
 # Writing the index
 my $op='<field name="';
@@ -130,6 +131,7 @@ for(my $i=0;$i<@hib;$i++){
 			print "\n";
 			print'<doc>';
 			print $op."id".$cls."hofinh-".$ID.$endtag;		
+			print $op."book".$cls.$BOOK.$ID.$endtag;		
 			print $op."articleID".$cls."I".$articleID.$endtag;
 			print $op."doc-name".$cls."rf15_I_121220".$endtag;		
 			print $op."type".$cls."hofinhaber".$endtag;		
