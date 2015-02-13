@@ -58,7 +58,7 @@
 
 	   <requestHandler name="/select" class="solr.SearchHandler" >
                 <lst name="defaults">
-                        <str name="df">article-title</str>
+                        <str name="df">article-title</str> 
       			<str name="echoParams">all</str>
 	<!-- Spell checking defaults -->
 			<str name="spellcheck">on</str>
@@ -70,9 +70,10 @@
 			<str name="spellcheck.collateExtendedResults">true</str>
 			<str name="spellcheck.maxCollationTries">5</str>
 			<str name="spellcheck.maxCollations">3</str>
-		 <!--	<str name="qf">
-			      article-title^5 hofinhaber^3 hofinhaber_dynastie^2 image_caption^1 content^1
-  			 </str>  -->
+		 	<str name="qf">
+			      article-title^10 subArticle-title^9 section-title^8 hofinhaber^3 hofinhaber_dynastie^5 hofinhaber_line^5 image_caption^1 content^2
+			      grafen^5 grafenresidenzen^6 
+  			 </str>  
                 </lst>
         </requestHandler>
 

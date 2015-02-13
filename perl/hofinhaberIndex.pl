@@ -131,7 +131,7 @@ for(my $i=0;$i<@hib;$i++){
 			print "\n";
 			print'<doc>';
 			print $op."id".$cls."hofinh-".$ID.$endtag;		
-			print $op."book".$cls.$BOOK.$ID.$endtag;		
+			print $op."book".$cls.$BOOK.$endtag;		
 			print $op."articleID".$cls."I".$articleID.$endtag;
 			print $op."doc-name".$cls."rf15_I_121220".$endtag;		
 			print $op."type".$cls."hofinhaber".$endtag;		

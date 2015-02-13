@@ -23,12 +23,12 @@
 		 <field name="page-from" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
 		 <field name="page-to" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
 		 <field name="path" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-			<!-- only for Unterbegriff-Artikel -->
-		 <field name="parentArticleID" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+
+		 <field name="subArticleID" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		 <field name="subArticle-title" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
 		 <field name="section-title" type="text_de" indexed="true" stored="true" required="false" multiValued="false"/>
 		 <field name="article-title" type="text_de" indexed="true" stored="true" required="false" multiValued="false"/>
 		<field name="author" type="text_de" indexed="true" stored="true" required="false" multiValued="false"/>
-		<!-- <field name="co_author" type="text_de" indexed="true" stored="true" required="false" multiValued="true"/> -->
 		<!-- Content -->
 		<field name="content" type="text_de" indexed="true" stored="true" required="false" multiValued="false" termVectors="true" termPositions="true" termOffsets="true"/>
 		<field name="sources" type="text_de" indexed="true" stored="true" required="false" multiValued="true"/>
@@ -63,6 +63,8 @@
 		<field name="image_file" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
 		<field name="ubid" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
 		<field name="also_articleID" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+		<!-- HBIII specific --> 
+		<field name="image_nachweis" type="string" indexed="true" stored="true" required="false" multiValued="false" />
 		
 		<!-- necessary for transaction log -->
 		<field name="_version_" type="long" indexed="true" stored="true"/>
@@ -70,6 +72,7 @@
 
 		<!-- suggester field--> 
 		<dynamicField name="*_suggest" type="phrase_suggest" indexed="true" stored="true" multiValued="true" required="false"/>
+		<dynamicField name="*_facet" type="string" indexed="true" stored="true" multiValued="true" required="false"/>
 
 	  </fields>
 	  
@@ -78,6 +81,10 @@
 		<copyField source="hofinhaber_dynastie" dest="all_suggest"/>
 		<copyField source="section-title" dest="all_suggest"/> 
 		<copyField source="article-title" dest="all_suggest"/>
+		<copyField source="author" dest="author_facet"/>
+		<copyField source="article-title" dest="title_facet"/>
+		<copyField source="hofinhaber" dest="hofinhaber_facet"/>
+		<copyField source="hofinhaber_dynastie" dest="dynastie_facet"/>
 
 
 
