@@ -10,6 +10,10 @@ open db_images, '<:encoding(UTF-8)', $ARGV[0] || die "cannot open ".$ARGV[0]."\n
 open db_imgreferences,  $ARGV[1] || die "cannot open ".$ARGV[1]."\n";
 
 
+
+my $BOOK='II';
+
+
 my @images=<db_images>;
 chomp@images;
 my @irf=<db_imgreferences>;
@@ -50,6 +54,7 @@ my %ubid;
 my %legende;
 my %abb_name;
 my %filename;
+#my %name;
 # In-loop incremente!
 my $ID;
 for(my $i=0; $i<@images; $i++){
@@ -58,8 +63,10 @@ for(my $i=0; $i<@images; $i++){
 		$bid{$ID}=&trimField($images[++$i],"BegriffID");
 		$ubid{$ID}=&trimField($images[++$i],"UBID");
 		$legende{$ID}=&trimField($images[$i+=2],"Legende");
+		
 	}elsif($images[$i]=~/\<field name=\"Name\"\>/){	
 		$filename{$ID}=&trimField($images[$i],"Name");
+		##$filename{$ID} = $ID."_".$bid{$ID}.$name{$ID};
 		$abb_name{$ID}=&trimField($images[$i+=7], "Abbildung");
 		$i+=3;
 	}
@@ -75,11 +82,13 @@ print '<?xml version="1.0" encoding="UTF-8"?><add>';
 foreach(keys(%bid)){
 	print "\n";
 	print'<doc>';
-	print $op."id".$cls."imgHBII".$_."-".$bid{$_}.$endtag;		
+	print $op."id".$cls."img-".$_."-".$bid{$_}.$endtag;		
+	print $op."book".$cls.$BOOK.$endtag;		
+		
+	print $op."articleID".$cls."II".$bid{$_}.$endtag;
+
 	if(exists($ubid{$_}) && $ubid{$_}!=0){
-		print $op."articleID".$cls."II".$ubid{$_}.$endtag;
-	}else{
-		print $op."articleID".$cls.$bid{$_}.$endtag;
+		print $op."ubid".$cls."IIub".$ubid{$_}.$endtag;
 	}		
 	print $op."doc-name".$cls."rf15_II_121207".$endtag;		
 	print $op."type".$cls."image".$endtag;		
@@ -87,10 +96,10 @@ foreach(keys(%bid)){
 	print $op."image_name".$cls.$abb_name{$_}.$endtag;		
 	my $l =$legende{$_};
 	$l=~s/^Abb\.*\s*\d+\.*://; 
-	print $op."image_caption".$cls.$l.$endtag;		
+	print $op."image_caption".$cls.'<![CDATA['.$l.']]>'.$endtag;		
 	print $op."image_file".$cls.$filename{$_}.$endtag."\n";	
 	foreach $x (@{$brefs{$_}}){	
-		print $op."also_articleID".$cls.$x.$endtag;		
+		print $op."also_articleID".$cls."II".$x.$endtag;		
 	}
 	print'</doc>';
 }
