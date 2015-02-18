@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	<schema name="ropen-backend" version="1.5">
+
 		<!-- Schema for Resikom Solr-Index. A document can be of type article, hofinhaber, grafen, image
 		  Each solr document should have an articleID, which references which hofinhaber/grafen/images belong to 
 		  which article. Images also may have also_articleIDs. 
@@ -50,6 +51,7 @@
 
 		<!-- Type article references all (div/@type=references) -->
 		<field name="article_reference" type="text_de" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="article_reference_id" type="text_de" indexed="true" stored="true" required="false" multiValued="false"/>
 
 		<!-- Type grafen / residenzen  HBIV -->
 		 <field name="grafen" type="text_de" indexed="true" stored="true" required="false" multiValued="false"/>
@@ -68,6 +70,8 @@
 		
 		<!-- necessary for transaction log -->
 		<field name="_version_" type="long" indexed="true" stored="true"/>
+		<!-- enable nested documents -->
+	   <field name="_root_" type="string" indexed="true" stored="false">
 
 
 		<!-- suggester field--> 

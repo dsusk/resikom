@@ -86,6 +86,7 @@ foreach(keys(%bid)){
 	print $op."book".$cls.$BOOK.$endtag;		
 		
 	print $op."articleID".$cls."II".$bid{$_}.$endtag;
+	#print $op."img_article_ref".$cls."II".$bid{$_}.$endtag;
 
 	if(exists($ubid{$_}) && $ubid{$_}!=0){
 		print $op."ubid".$cls."IIub".$ubid{$_}.$endtag;
@@ -97,7 +98,7 @@ foreach(keys(%bid)){
 	my $l =$legende{$_};
 	$l=~s/^Abb\.*\s*\d+\.*://; 
 	print $op."image_caption".$cls.'<![CDATA['.$l.']]>'.$endtag;		
-	print $op."image_file".$cls.$filename{$_}.$endtag."\n";	
+	print $op."image_file".$cls.$filename{$_}.$endtag;	
 	foreach $x (@{$brefs{$_}}){	
 		print $op."also_articleID".$cls."II".$x.$endtag;		
 	}
