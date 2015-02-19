@@ -236,6 +236,9 @@
             </xsl:when>
         </xsl:choose>
     </xsl:template>
+    
+    <xsl:template match="TEI:head[@xml:id]" mode="HBII-inner" />
+        
 
     <xsl:template name="doc">
         <xsl:param name="section_name"/>
@@ -324,8 +327,8 @@
             </field>
             <xsl:text>
                  </xsl:text>
-            <xsl:apply-templates select=".//TEI:div[@type='graphic']" mode="index"/>
-            <xsl:apply-templates select=".//TEI:div[@type='graphic_also']" mode="index"/>
+            <!-- <xsl:apply-templates select=".//TEI:div[@type='graphic']" mode="index"/>
+            <xsl:apply-templates select=".//TEI:div[@type='graphic_also']" mode="index"/> -->
             <xsl:apply-templates select=".//TEI:div[@type='references']" mode="index"/>
             <xsl:apply-templates select=".//TEI:div[@type='sources']" mode="index"/>
             <xsl:apply-templates select=".//TEI:div[@type='literature']" mode="index"/>
@@ -353,7 +356,7 @@
             </xsl:when>
             <xsl:when test="$mode-param = 'HBII'">
                 <xsl:variable name="element" select="concat('h', count(./ancestor::*))"/>
-                <xsl:element name="{$element}">
+                   <xsl:element name="{$element}">
                     <xsl:value-of select="text()"/>
                 </xsl:element>
             </xsl:when>
@@ -430,6 +433,8 @@
         <xsl:text>
                  </xsl:text>
     </xsl:template>
-
+    <xsl:template match="TEI:div[@type='references']" mode="index" />
+        
+    
 
 </xsl:stylesheet>
