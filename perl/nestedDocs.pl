@@ -2,14 +2,24 @@
 
 binmode(STDOUT, ":utf8");
 	
-my $USAGE="nestedDocs.pl <Article-Index> <img/hofinh/geop-index>";
+my $USAGE="nestedDocs.pl <Article-Index> <img/hofinh/geop-index> <secIndex img/hofinha....>";
 
-if(@ARGV!=2){print $USAGE; exit -1}
+if(@ARGV<2){print $USAGE; exit -1}
 open article, '<:encoding(UTF-8)', $ARGV[0] || die "cannot open ".$ARGV[0]."\n";
 open nested,  '<:encoding(UTF-8)', $ARGV[1] || die "cannot open ".$ARGV[1]."\n";
-
-
 my @nested=<nested>;
+close nested;
+
+if(@ARGV>2){
+	for(my $i=2; $i<@ARGV; $i++){
+		open nestedx,  '<:encoding(UTF-8)', $ARGV[$i] || die "cannot open ".$ARGV[$i]."\n";
+		my @n=<nestedx>;
+		push(@nested, @n);
+		close nestedx;
+	}
+}
+
+
 my%docs;
 for(my $i=0; $i<@nested; $i++){
 	$nested[$i]=~s/\<\/?add\>//g;
