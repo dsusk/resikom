@@ -237,6 +237,10 @@
         </xsl:choose>
     </xsl:template>
     
+    <xsl:template match="TEI:p|pb|hi" mode="HBII-inner">
+        <xsl:copy-of select="." />
+    </xsl:template>
+    
     <xsl:template match="TEI:head[@xml:id]" mode="HBII-inner" />
         
 
