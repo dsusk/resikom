@@ -10,6 +10,8 @@
 
     <!-- SELECT mode-param for the resp. Handbook (HBI, HBII, HBIII, HBIV)-->
     <xsl:variable name="mode-param">HBII</xsl:variable>
+    
+   
     <xsl:variable name="hb-band" select="//TEI:teiHeader/TEI:fileDesc/TEI:titleStmt/TEI:title"
         as="xs:string"/>
     <xsl:variable name="hb-title" select="//TEI:teiHeader/TEI:fileDesc/TEI:publicationStmt/TEI:p"
@@ -34,7 +36,6 @@
             <xsl:otherwise>NO_HANDBOOK</xsl:otherwise>
         </xsl:choose>
     </xsl:variable>
-
     <xsl:variable name="isbn">
         <xsl:choose>
             <xsl:when test="$mode-param = 'HBI'">978-3-7995-4515-0</xsl:when>
@@ -44,7 +45,6 @@
             <xsl:otherwise>NO_HANDBOOK</xsl:otherwise>
         </xsl:choose>
     </xsl:variable>
-
     <xsl:variable name="auflage">
         <xsl:choose>
             <xsl:when test="$mode-param = 'HBI'">1. Auflage 2003</xsl:when>
@@ -54,7 +54,6 @@
             <xsl:otherwise>NO_HANDBOOK</xsl:otherwise>
         </xsl:choose>
     </xsl:variable>
-
     <xsl:template match="text()" mode="#default index HBI  HBIV HBII HBIII"/>
 
     <xsl:template match="/">
@@ -91,7 +90,12 @@
                 <xsl:variable name="section_name" select="ancestor::TEI:div/TEI:head"/>
                 <xsl:variable name="author"
                     select="normalize-space(descendant::TEI:div[@type='author'][1])"/>
-                <xsl:variable name="articleID" select="./TEI:head/@xml:id"/>
+                    <xsl:variable name="articleID" select="./TEI:head/@xml:id"/>
+                <xsl:variable name="N" as="node()*">
+                    <xsl:element name="TEI:div">
+                        <xsl:apply-templates select="./*" mode="HB-inner"/>
+                    </xsl:element> 
+                </xsl:variable>
                 <xsl:variable name="doc-name" select="rk:document-name(.)"/>
                 <xsl:call-template name="doc">
                     <xsl:with-param name="section_name" select="$section_name"/>
@@ -99,14 +103,14 @@
                     <xsl:with-param name="author" select="$author"/>
                     <xsl:with-param name="articleID" select="$articleID"/>
                     <xsl:with-param name="doc-name" select="$doc-name"/>
-                    <xsl:with-param name="node" select="."> </xsl:with-param>
+                    <xsl:with-param name="node" select="$N"> </xsl:with-param>
                 </xsl:call-template>
             </xsl:when>
             <xsl:otherwise/>
         </xsl:choose>
 
     </xsl:template>
-
+    
 
     <!-- DIV template for HB IV -->
     <xsl:template match="TEI:div[not(@type)]" mode="HBIV">
@@ -178,7 +182,7 @@
                         <!-- BEGRIFFE: copy all chid divs without head@xml:id -->
                         <xsl:variable name="N" as="node()*">
                             <xsl:element name="TEI:div">
-                                <xsl:apply-templates select="./*" mode="HBII-inner"/>
+                                <xsl:apply-templates select="./*" mode="HB-inner"/>
                             </xsl:element>
                         </xsl:variable>
                         <xsl:call-template name="doc">
@@ -192,8 +196,8 @@
 
                         <!-- UNTERBEGRIFFE -->
                         <xsl:for-each select="./TEI:div[not(@type)]">
-                            <xsl:choose>
-                                <xsl:when test="./TEI:head[@xml:id]">
+                            <xsl:choose> <!-- and contains.. only necessary if structure is not correct -->
+                                <xsl:when test="./TEI:head[@xml:id] and contains(./TEI:head/@xml:id, 'IIub')">
                                     <xsl:variable name="subarticleID" select="./TEI:head/@xml:id"/>
                                     <xsl:variable name="subarticle_name" select="./TEI:head"/>
                                     <xsl:variable name="author"
@@ -229,19 +233,21 @@
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template match="TEI:div" mode="HBII-inner">
+
+    <!-- mode HB-inner is used fo HB II "unterbegriffe" and HB I unterartikel -->
+    <xsl:template match="TEI:div" mode="HB-inner">
         <xsl:choose>
-            <xsl:when test="./TEI:head[not(@xml:id)] and not(contains(../TEI:head/@xml:id, 'IIub'))">
+            <xsl:when test="./TEI:head[not(@xml:id)] and not(contains(../TEI:head/@xml:id, 'Iu'))">
                 <xsl:copy-of select="."/>
             </xsl:when>
         </xsl:choose>
     </xsl:template>
     
-    <xsl:template match="TEI:p|pb|hi" mode="HBII-inner">
+    <xsl:template match="TEI:p|pb|hi" mode="HB-inner">
         <xsl:copy-of select="." />
     </xsl:template>
     
-    <xsl:template match="TEI:head[@xml:id]" mode="HBII-inner" />
+    <xsl:template match="TEI:head[@xml:id]" mode="HB-inner" />
         
 
     <xsl:template name="doc">
@@ -345,7 +351,7 @@
     <xsl:template match="TEI:head[not(@xml:id)]" mode="content">
         <xsl:choose>
             <xsl:when test="$mode-param = 'HBI'">
-                <xsl:variable name="element" select="concat('h', count(./ancestor::*)-5)"/>
+                <xsl:variable name="element" select="concat('h', count(./ancestor::*)-1)"/>
                 <xsl:element name="{$element}">
                     <xsl:value-of select="text()"/>
                 </xsl:element>
@@ -381,6 +387,7 @@
         </xsl:element>
     </xsl:template>
     <xsl:template match="TEI:pb" mode="content"/>
+    <xsl:template match="TEI:figure" mode="content" />
 
     <xsl:template match="TEI:hi" mode="content">
         <xsl:choose>
