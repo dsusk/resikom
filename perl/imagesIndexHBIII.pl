@@ -18,7 +18,7 @@ my $op='<field name="';
 my $cls='">';
 my $endtag='</field>';
 print '<?xml version="1.0" encoding="UTF-8"?>';
-print "\n<add>";
+print "\n<add>\n";
 FOR: for(my $i=0;$i<@img;$i++){
 	if($img[$i]=~/\<field name=\"ID\"\>/){
 		my $Abbildung=&trimField($img[$i+4], "Abbildung");
@@ -36,7 +36,7 @@ FOR: for(my $i=0;$i<@img;$i++){
 			next FOR; 
 		}
 		my $ID=&trimField($img[$i], "ID");
-		my $articleID=&trimField($img[$i+3], "TextID");
+		my $article_id=&trimField($img[$i+3], "TextID");
 		my $caption=&trimField($img[$i+2], "Quellentitel");
 		my $nachweis; # can have several lines
 		for(my $j=$i+6; $j<@img; $j++){	
@@ -44,48 +44,45 @@ FOR: for(my $i=0;$i<@img;$i++){
 			$nachweis.=$img[$j]." ";
 		}
 		$nachweis=&trimField($nachweis, "Nachweis");
-		print "\n";
 		print'<doc>';
 		print $op."id".$cls."imgIII-".$ID.$endtag;		
 		print $op."book".$cls.$BOOK.$endtag;		
-		print $op."articleID".$cls."III".$articleID.$endtag;
-		print $op."doc-name".$cls."rf15_III".$endtag;		
+		print $op."article_id".$cls."III".$article_id.$endtag;
+		print $op."docname".$cls."rf15_III".$endtag;		
 		print $op."type".$cls."image".$endtag;		
 		print $op."image".$cls.$ID.$endtag;		
 		print $op."image_name".$cls.$name.$endtag;
        		print $op."image_caption".$cls.$caption.$endtag;
- 	        print $op."image_file".$cls.$filename.$endtag."\n";
- 	        print $op."image_nachweis".$cls.$nachweis.$endtag."\n";
-		print'</doc>';
-      } # end if articleID
+ 	        print $op."image_file".$cls.$filename.$endtag;
+ 	        print $op."image_nachweis".$cls.$nachweis.$endtag;
+		print'</doc>'."\n";
+      } # end if article_id
 }
 
 # two manual entrys for article 5 (devisen und embleme)
-print "\n";
 print'<doc>';
 print $op."id".$cls."imgIII-1a".$endtag;              
 print $op."book".$cls.$BOOK.$endtag;            
-print $op."articleID".$cls."III5".$endtag;
-print $op."doc-name".$cls."rf15_III".$endtag;           
+print $op."article_id".$cls."III5".$endtag;
+print $op."docname".$cls."rf15_III".$endtag;           
 print $op."type".$cls."image".$endtag;          
 print $op."image".$cls."1a".$endtag;             
 print $op."image_name".$cls."Farbtafel 1a".$endtag;
-print $op."image_file".$cls."taf2.jpg".$endtag."\n";
-print'</doc>';
+print $op."image_file".$cls."taf2.jpg".$endtag;
+print'</doc>'."\n";
         
-print "\n";
 print'<doc>';
 print $op."id".$cls."imgIII-XX".$endtag;              
 print $op."book".$cls.$BOOK.$endtag;            
-print $op."articleID".$cls."III5".$endtag;
-print $op."doc-name".$cls."rf15_III".$endtag;           
+print $op."article_id".$cls."III5".$endtag;
+print $op."docname".$cls."rf15_III".$endtag;           
 print $op."type".$cls."image".$endtag;          
 print $op."image".$cls."XX".$endtag;             
 print $op."image_name".$cls."Abbildung 8a".$endtag;
 print $op."image_caption".$cls.". Devise mit Chiffrenschlüssel und in Kombination mit Skala aeio".$endtag;
-print $op."image_file".$cls."figXX.jpg".$endtag."\n";
-print $op."image_nachweis".$cls."Lhotsky, »Devise«, S. 221 Nr. 9".$endtag."\n";
-print'</doc>';
+print $op."image_file".$cls."figXX.jpg".$endtag;
+print $op."image_nachweis".$cls."Lhotsky, »Devise«, S. 221 Nr. 9".$endtag;
+print'</doc>'."\n";
 
 
 print"</add>";

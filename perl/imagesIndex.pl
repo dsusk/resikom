@@ -85,13 +85,13 @@ foreach(keys(%bid)){
 	print $op."id".$cls."img-".$_."-".$bid{$_}.$endtag;		
 	print $op."book".$cls.$BOOK.$endtag;		
 		
-	print $op."articleID".$cls."II".$bid{$_}.$endtag;
+	print $op."article_id".$cls."II".$bid{$_}.$endtag;
 	#print $op."img_article_ref".$cls."II".$bid{$_}.$endtag;
 
 	if(exists($ubid{$_}) && $ubid{$_}!=0){
 		print $op."ubid".$cls."IIub".$ubid{$_}.$endtag;
 	}		
-	print $op."doc-name".$cls."rf15_II_121207".$endtag;		
+	print $op."docname".$cls."rf15_II_121207".$endtag;		
 	print $op."type".$cls."image".$endtag;		
 	print $op."image".$cls.$_.$endtag;		
 	print $op."image_name".$cls.$abb_name{$_}.$endtag;		
@@ -100,7 +100,7 @@ foreach(keys(%bid)){
 	print $op."image_caption".$cls.'<![CDATA['.$l.']]>'.$endtag;		
 	print $op."image_file".$cls.$filename{$_}.$endtag;	
 	foreach $x (@{$brefs{$_}}){	
-		print $op."also_articleID".$cls."II".$x.$endtag;		
+		print $op."also_article_id".$cls."II".$x.$endtag;		
 	}
 	print'</doc>';
 }

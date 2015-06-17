@@ -268,16 +268,16 @@
             </field>
             <!--   <xsl:text>
                  </xsl:text> -->
-            <field name="doc-name">
+            <field name="docname">
                 <xsl:value-of select="$doc-name"/>
             </field>
             <field name="book">
                 <xsl:value-of select="$book"/>
             </field>
-            <field name="book-title">
+            <field name="book_title">
                 <xsl:value-of select="$handbuch"/>
             </field>
-            <field name="book-subtitle">
+            <field name="book_subtitle">
                 <xsl:value-of select="$hb_subtitle"/>
             </field>
 
@@ -291,43 +291,51 @@
             <field name="auflage">
                 <xsl:value-of select="$auflage"/>
             </field>
-            <field name="type">
-                <xsl:text>article</xsl:text>
-            </field>
             <field name="path">
                 <xsl:value-of select="rk:generate-xpath($node, true())"/>
             </field>
             <xsl:if test="$section_name">
-                <field name="section-title">
+                <field name="section_title">
                     <xsl:value-of select="$section_name"/>
                 </field>
             </xsl:if>
-            <field name="article-title">
+            <field name="article_title">
                 <xsl:value-of select="$article_name"/>
             </field>
             <field name="author">
                 <xsl:value-of select="$author"/>
             </field>
             <xsl:if test="$articleID">
-                <field name="articleID">
+                <field name="article_id">
                     <xsl:value-of select="$articleID"/>
                 </field>
             </xsl:if>
-            <xsl:if test="$subarticleID">
-                <field name="subArticleID">
+
+            <xsl:choose>
+                <xsl:when test="$subarticleID">
+                <field name="type">
+                    <xsl:text>subarticle</xsl:text>
+                </field>
+                <field name="subarticle_id">
                     <xsl:value-of select="$subarticleID"/>
                 </field>
-            </xsl:if>
+                </xsl:when>
+                <xsl:otherwise>
+                    <field name="type">
+                        <xsl:text>article</xsl:text>
+                    </field>
+                </xsl:otherwise>    
+            </xsl:choose>
             <xsl:if test="$subarticle_name">
-                <field name="subArticle-title">
+                <field name="subarticle_title">
                     <xsl:value-of select="$subarticle_name"/>
                 </field>
             </xsl:if>
 
-            <field name="page-from">
+            <field name="page_from">
                 <xsl:value-of select="preceding::TEI:pb[1]/@n"/>
             </field>
-            <field name="page-to">
+            <field name="page_to">
                 <xsl:value-of select="number(following::TEI:pb[1]/@n)-1"/>
             </field>
             <field name="content">

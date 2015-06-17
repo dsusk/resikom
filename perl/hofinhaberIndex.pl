@@ -23,9 +23,9 @@ print "\n<add>";
 for(my $i=0;$i<@hib;$i++){
 	if($hib[$i]=~/\<field name=\"ID\"\>/){
 		my $ID=&trimField($hib[$i], "ID");
-		my $articleID=&trimField($hib[$i+6], "DynaID");
+		my $article_id=&trimField($hib[$i+6], "DynaID");
 
-		if($articleID != ''){
+		if($article_id != ''){
 			my $inhab=&trimField($hib[$i+4], "Hofinhaber");
 			my $dynastie=&trimField($hib[$i+2], "Dynastie");
 			my $linie=&trimField($hib[$i+3], "Linie");
@@ -132,8 +132,8 @@ for(my $i=0;$i<@hib;$i++){
 			print'<doc>';
 			print $op."id".$cls."hofinh-".$ID.$endtag;		
 			print $op."book".$cls.$BOOK.$endtag;		
-			print $op."articleID".$cls."I".$articleID.$endtag;
-			print $op."doc-name".$cls."rf15_I_121220".$endtag;		
+			print $op."article_id".$cls."I".$article_id.$endtag;
+			print $op."docname".$cls."rf15_I_121220".$endtag;		
 			print $op."type".$cls."hofinhaber".$endtag;		
 			print $op."hofinhaber".$cls.$inhab.$endtag;		
 			print $op."hofinhaber_dynastie".$cls.$dynastie.$endtag;		
@@ -145,7 +145,7 @@ for(my $i=0;$i<@hib;$i++){
 				print $op."hofinhaber_amtszeit_weitere_bis".$cls.$az_weitere_bis.$endtag;
 			}		
 			print'</doc>';
-               } # end if articleID
+               } # end if article_id
 	}
 }
 print"</add>";

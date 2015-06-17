@@ -12,10 +12,10 @@ close nested;
 
 if(@ARGV>2){
 	for(my $i=2; $i<@ARGV; $i++){
-		open nestedx,  '<:encoding(UTF-8)', $ARGV[$i] || die "cannot open ".$ARGV[$i]."\n";
-		my @n=<nestedx>;
+		open nested,  '<:encoding(UTF-8)', $ARGV[$i] || die "cannot open ".$ARGV[$i]."\n";
+		my @n=<nested>;
 		push(@nested, @n);
-		close nestedx;
+		close nested;
 	}
 }
 
@@ -23,7 +23,7 @@ if(@ARGV>2){
 my%docs;
 for(my $i=0; $i<@nested; $i++){
 	$nested[$i]=~s/\<\/?add\>//g;
-	if($nested[$i]=~/\<field name\=\"articleID\"\>(\w+)\<\/field\>/){
+	if($nested[$i]=~/\<field name\=\"article_id\"\>(\w+)\<\/field\>/){
 		if(exists($docs{$1})){
                    push(@{$docs{$1}}, $nested[$i]);
                 }else{
@@ -50,11 +50,11 @@ for(my$i=0; $i<@article; $i++){
 			}
 		}
 	}
-	if($article[$i]=~/\<field name\=\"articleID\"\>(\w+)\<\/field\>/){
+	if($article[$i]=~/\<field name\=\"article_id\"\>(\w+)\<\/field\>/){
 		$id=$1;
 		$ubid='';
 	}
-	if($article[$i]=~/\<field name\=\"subArticleID\"\>(\w+)\<\/field\>/){
+	if($article[$i]=~/\<field name\=\"subarticle_id\"\>(\w+)\<\/field\>/){
                 $ubid=$1;
         }
 	print $article[$i];
