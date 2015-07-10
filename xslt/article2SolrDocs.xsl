@@ -9,7 +9,7 @@
     <xsl:include href="./rk_functions.xsl"/>
 
     <!-- SELECT mode-param for the resp. Handbook (HBI, HBII, HBIII, HBIV)-->
-    <xsl:variable name="mode-param">HBII</xsl:variable>
+    <xsl:variable name="mode-param">HBIV</xsl:variable>
     
    
     <xsl:variable name="hb-band" select="//TEI:teiHeader/TEI:fileDesc/TEI:titleStmt/TEI:title"
@@ -123,7 +123,7 @@
                     <xsl:variable name="article_name" select="$section_name"/>
                     <xsl:variable name="subarticle_name" select="./TEI:head"/>
                     <xsl:variable name="subarticleID"
-                        select="concat($articleID, substring(./TEI:head,1,1))"/>
+                        select="concat($articleID, substring(./TEI:head,1,1), '-',count(preceding::TEI:head))"/>
                     <xsl:variable name="author" select="normalize-space(./TEI:div[@type='author'])"/>
                     <xsl:call-template name="doc">
                         <xsl:with-param name="section_name" select="$section_name"/>

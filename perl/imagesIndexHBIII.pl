@@ -51,7 +51,7 @@ FOR: for(my $i=0;$i<@img;$i++){
 		print $op."docname".$cls."rf15_III".$endtag;		
 		print $op."type".$cls."image".$endtag;		
 		print $op."image".$cls.$ID.$endtag;		
-		print $op."image_name".$cls.$name.$endtag;
+		print $op."image_name".$cls.$name.":".$endtag;
        		print $op."image_caption".$cls.$caption.$endtag;
  	        print $op."image_file".$cls.$filename.$endtag;
  	        print $op."image_nachweis".$cls.$nachweis.$endtag;
